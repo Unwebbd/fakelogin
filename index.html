@@ -1,0 +1,80 @@
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.util.Random;
+
+public class DiscordAccountGenerator extends Application {
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Discord Account Generator");
+
+        // Create UI components
+        Label usernameLabel = new Label("Enter Discord Username:");
+        TextField usernameField = new TextField();
+        Button generateButton = new Button("Generate Account Info");
+        TextArea outputArea = new TextArea();
+        outputArea.setEditable(false);
+
+        // Set button action
+        generateButton.setOnAction(e -> {
+            String username = usernameField.getText();
+            if (isValidDiscordUsername(username)) {
+                String password = generatePassword();
+                String gmail = generateGmail(username);
+                boolean isUsingVPN = checkVPN();
+
+                // Display results
+                outputArea.setText("Generated Password: " + password + "\n" +
+                        "Generated Gmail: " + gmail + "\n" +
+                        "Using VPN: " + (isUsingVPN ? "Yes" : "No"));
+            } else {
+                outputArea.setText("Invalid Discord username. Please enter a valid username.");
+            }
+        });
+
+        // Layout
+        VBox layout = new VBox(10);
+        layout.getChildren().addAll(usernameLabel, usernameField, generateButton, outputArea);
+        Scene scene = new Scene(layout, 400, 300);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    // Method to validate Discord username
+    private boolean isValidDiscordUsername(String username) {
+        // Basic validation: username should not be empty and should not contain spaces
+        return username != null && !username.trim().isEmpty() && !username.contains(" ");
+    }
+
+    // Method to generate a random password
+    private String generatePassword() {
+        int length = 12; // Length of the password
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        Random random = new Random();
+        StringBuilder password = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            password.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return password.toString();
+    }
+
+    // Method to generate a Gmail address based on the username
+    private String generateGmail(String username) {
+        return username + "@gmail.com";
+    }
+
+    // Placeholder method to check if the user is using a VPN
+    private boolean checkVPN() {
+        // In a real application, you would implement actual VPN detection logic here
+        // For demonstration, we will return false (not using VPN)
+        return false;
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
